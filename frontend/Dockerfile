@@ -1,19 +1,3 @@
-# Stage 1: Build Angular App
-FROM node:18 AS build
-
-WORKDIR /app
-
-# Copy package files first (better caching)
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy rest of the app
-COPY . .
-
-# Build Angular (production build)
-RUN npm run build --prod
 
 # --- Stage: Serve Pre-built Angular App ---
 FROM nginx:alpine
@@ -23,7 +7,7 @@ FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copy already built Angular dist folder from host to container
-COPY dist/hrms/browser/  /usr/share/nginx/html/
+COPY dist/hrms-frontend/browser/  /usr/share/nginx/html/
 
 # Copy custom nginx config if needed
 COPY default.conf /etc/nginx/conf.d/default.conf
