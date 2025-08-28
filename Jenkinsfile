@@ -19,7 +19,7 @@ pipeline {
 
         stage('Build Backend Docker Image') {
             steps {
-                dir('backend') {  // go inside backend folder
+                dir('Backend_hrms') {  // go inside backend folder
                     sh 'docker build -t my-backend-app:latest .'
                 }
             }
