@@ -7,7 +7,7 @@ FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copy already built Angular dist folder from host to container
-COPY dist/hrms-frontend/browser/  /usr/share/nginx/html/
+COPY --from=build /app/dist/hrms-frontend/browser/ /usr/share/nginx/html/
 
 # Copy custom nginx config if needed
 COPY default.conf /etc/nginx/conf.d/default.conf
