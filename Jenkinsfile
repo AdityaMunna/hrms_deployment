@@ -1,6 +1,6 @@
 
 pipeline {
-    agent {label 'Node'}
+    agent {label 'jenkins-agent'}
     
     environment{
         SONAR_HOME = tool "Sonar"
