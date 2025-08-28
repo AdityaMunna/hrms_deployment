@@ -1,48 +1,34 @@
 pipeline {
     agent { label 'Agent-Mohan' }
 
-environment {
-        DOCKER_IMAGE = "my-frontend-app"   // change to frontend / backend accordingly
-        DOCKER_TAG   = "latest"
-        APP_PORT     = "8000"
-    }
-
     stages {
-        stage('Checkout Code') {
+        stage('Git: Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/mohancc1/hrms_deployment.git'
+                git branch: 'main',
+                    url: 'https://github.com/mohancc1/hrms_deployment.git'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Frontend Docker Image') {
             steps {
-                script {
-                    sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                dir('frontend') {  // go inside frontend folder
+                    sh 'docker build -t my-frontend-app:latest .'
                 }
             }
         }
 
-        stage('Test Image') {
+        stage('Build Backend Docker Image') {
             steps {
-                script {
-                    sh "docker run --rm -d -p ${APP_PORT}:8000 --name test_container ${DOCKER_IMAGE}:${DOCKER_TAG}"
-                    sh "sleep 10"  // wait for app to boot
-                    sh "curl -f http://localhost:${APP_PORT} || exit 1"
-                    sh "docker stop test_container"
+                dir('backend') {  // go inside backend folder
+                    sh 'docker build -t my-backend-app:latest .'
                 }
             }
         }
 
-        stage('Deploy') {
+        stage('Run Containers') {
             steps {
-                script {
-                    // run container in background permanently
-                    sh """
-                        docker stop ${DOCKER_IMAGE} || true
-                        docker rm ${DOCKER_IMAGE} || true
-                        docker run -d -p ${APP_PORT}:8000 --name ${DOCKER_IMAGE} ${DOCKER_IMAGE}:${DOCKER_TAG}
-                    """
-                }
+                sh 'docker run -d -p 8080:80 my-frontend-app:latest'
+                sh 'docker run -d -p 8000:8000 my-backend-app:latest'
             }
         }
     }
