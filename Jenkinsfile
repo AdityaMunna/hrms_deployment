@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'jenkins-agent' }
+    agent { label 'Agent-Mohan' }
 
     stages {
         stage('Clean Workspace') {
