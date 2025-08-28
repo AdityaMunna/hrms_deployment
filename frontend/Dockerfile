@@ -1,5 +1,23 @@
+# Stage 1: Build Angular App
+FROM node:18 AS build
+
+WORKDIR /app
+
+# Copy package files first (better caching)
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy rest of the app
+COPY . .
+
+# Build Angular (production build)
+RUN npm run build --prod
+
 # --- Stage: Serve Pre-built Angular App ---
 FROM nginx:alpine
+
 
 # Remove default nginx static assets
 RUN rm -rf /usr/share/nginx/html/*
