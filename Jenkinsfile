@@ -1,26 +1,23 @@
-
 pipeline {
-    agent {label 'jenkins-agent'}
-    
+    agent { label 'jenkins-agent' }
+
     stages {
-    
-        stage("Workspace cleanup"){
-            steps{
-                script{
-                    cleanWs()
-                }
-            }
-        }
-        
-        stage('Git: Code Checkout') {
+        stage('Clean Workspace') {
             steps {
-                script{
-                    code_checkout("https://github.com/mohancc1/hrms_deployment.git","main")
-                }
+                cleanWs()
             }
         }
-        
-       
+
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/mohancc1/hrms_deployment.git'
+            }
+        }
+
+        stage('Build Test') {
+            steps {
+                sh 'echo "✅ CI/CD Pipeline is working fine!"'
+            }
         }
     }
 }
