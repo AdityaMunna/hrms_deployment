@@ -1,0 +1,19 @@
+# --- Stage: Serve Pre-built Angular App ---
+FROM nginx:alpine
+
+# Remove default nginx static assets
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy already built Angular dist folder from host to container
+COPY dist/hrms/browser/browser/  /usr/share/nginx/html/
+
+# Copy custom nginx config if needed
+COPY default.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Start nginx in foreground
+CMD ["nginx", "-g", "daemon off;"]
+
+
