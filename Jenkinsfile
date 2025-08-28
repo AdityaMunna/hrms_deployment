@@ -27,7 +27,7 @@ pipeline {
 
         stage('Run Containers') {
             steps {
-                sh 'docker run -d -p 8080:80 my-frontend-app:latest'
+                sh 'docker run -d -p 8080:80 hrms-frontend:latest'
                 sh 'docker run -d -p 8000:8000 my-backend-app:latest'
             }
         }
