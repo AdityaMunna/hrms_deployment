@@ -12,7 +12,7 @@ pipeline {
         stage('Build Frontend Docker Image') {
             steps {
                 dir('frontend') {  // go inside frontend folder
-                    sh 'docker build -t my-frontend-app:latest .'
+                    sh 'docker build -t hrms-frontend:latest .'
                 }
             }
         }
