@@ -9,27 +9,19 @@ pipeline {
             }
         }
 
-        stage('Build Frontend Docker Image') {
+        stage('Docker Compose: Build & Run') {
             steps {
-                dir('frontend') {  // go inside frontend folder
-                    sh 'docker build -t hrms-frontend:latest .'
-                }
+                // Make sure Docker Compose file is at the root OR adjust the path
+                sh 'docker-compose down --remove-orphans'
+                sh 'docker-compose up --build -d'
             }
         }
+    }
 
-        stage('Build Backend Docker Image') {
-            steps {
-                dir('Backend_hrms') {  // go inside backend folder
-                    sh 'docker build -t my-backend-app:latest .'
-                }
-            }
-        }
-
-        stage('Run Containers') {
-            steps {
-                sh 'docker run -d -p 8080:80 hrms-frontend:latest'
-                sh 'docker run -d -p 8000:8000 my-backend-app:latest'
-            }
+    post {
+        always {
+            echo 'Cleaning up containers...'
+            sh 'docker-compose down --remove-orphans'
         }
     }
 }
