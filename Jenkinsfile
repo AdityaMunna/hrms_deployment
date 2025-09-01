@@ -1,27 +1,109 @@
 pipeline {
     agent { label 'Agent-Mohan' }
-
     stages {
-        stage('Git: Checkout') {
+
+ 
+        stage('Clone Frontend') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/mohancc1/hrms_deployment.git'
+                dir('frontend') {
+                    git branch: 'main', url: 'https://github.com/mohancc1/hrms_deployment.git'
+                }
+            }
+        }
+ 
+            stage('Build Backend') 
+		{
+           steps 
+		   {
+               dir('Backend_hrms') 
+			   {
+                    sh 'mvn clean package -DskipTests'
+               }
+           } 
+         }
+
+		 stage('Build Backend Docker Image') 
+		 {
+            steps 
+			{
+                dir('Backend_hrms') 
+				{
+                    sh 'docker build -t mohancc/backend:1.0 .'
+                }
+            }
+         } 
+
+		  stage('Build Frontend') 
+		{
+            steps 
+			{
+                echo 'Building Angular application...'
+				 dir('frontend') 
+				 {
+		        sh '''  
+		        rm -rf node_modules package-lock.json
+                npm install
+                ng build --configuration production --no-prerender
+                '''
+				}
+            }
+        } 
+
+		 stage('Build Frontend Docker Image') {
+            steps {
+                dir('frontend') {
+                    sh 'docker build -t mohancc/frontend:hrmssai1 .'
+                }
+            }
+        }	
+		 stage('Push Images to Docker Hub') {
+            steps {
+                echo 'Logging in and pushing image to Docker Hub...'
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-credentials',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+                    sh 'docker push mohancc/frontend:hrmssai'
+                    sh 'docker push mohancc/backend:hrmslatest'
+                }
+                echo 'Docker images pushed successfully.'
             }
         }
 
-        stage('Docker Compose: Build & Run') {
+		 stage('Deploy with Docker Compose') 
+		 {
             steps {
-                // Make sure Docker Compose file is at the root OR adjust the path
-                sh 'docker compose down --remove-orphans'
-                sh 'docker compose up --build -d'
+                echo 'Deploying application with Docker Compose...'
+				sh '''
+				docker-compose down --volumes --remove-orphans
+                docker system prune -af --volumes
+				docker-compose down
+				docker-compose up -d
+				'''
+                echo 'Application deployed successfully.'
             }
         }
-    }
 
-    post {
-        always {
-            echo 'Cleaning up containers...'
-            sh 'docker compose down --remove-orphans'
-        }
+		stage('Backup MySQL')
+		{
+         steps 
+		 {
+          script 
+		   {
+            sh '''
+                docker exec hrms_mysql-service_1 mysqldump -uroot -proot hrmsdb > backup.sql
+            '''
+           }
+ 
+          archiveArtifacts artifacts: 'backup.sql', fingerprint: true
+         }
+       }
+ 
+ 
+		
+
     }
 }
+    
