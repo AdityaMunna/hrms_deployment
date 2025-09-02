@@ -91,13 +91,27 @@ pipeline {
         script {
             sh '''
                 set -e
-                docker exec djangocicd-mysql-1 \
-                  mysqldump -uroot -proot hrms_db > backup.sql
+                MAX_TRIES=36  # 36 tries × 5 seconds = 180 seconds (3 minutes)
+                TRIES=0
+
+                until docker exec djangocicd-mysql-1 mysqladmin ping -uroot -proot --silent; do
+                  echo "Waiting for MySQL container to be ready..."
+                  sleep 5
+                  TRIES=$((TRIES+1))
+                  if [ $TRIES -ge $MAX_TRIES ]; then
+                    echo "MySQL did not start in 3 minutes!"
+                    exit 1
+                  fi
+                done
+
+                echo "MySQL is ready. Running backup..."
+                docker exec djangocicd-mysql-1 mysqldump -uroot -proot hrms_db > backup.sql
             '''
         }
         archiveArtifacts artifacts: 'backup.sql', fingerprint: true
     }
 }
+
 
 
  
