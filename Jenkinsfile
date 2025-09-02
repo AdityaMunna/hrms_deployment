@@ -77,10 +77,10 @@ pipeline {
             steps {
                 echo 'Deploying application with Docker Compose...'
 				sh '''
-				docker-compose down --volumes --remove-orphans
+				docker compose down --volumes --remove-orphans
                 docker system prune -af --volumes
-				docker-compose down
-				docker-compose up -d
+				docker compose down
+				docker compose up -d
 				'''
                 echo 'Application deployed successfully.'
             }
