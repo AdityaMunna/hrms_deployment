@@ -86,21 +86,17 @@ pipeline {
             }
         }
 
-		stage('Backup MySQL')
-		{
-         steps 
-		 {
-          script 
-		   {
+		stage('Backup MySQL') {
+    steps {
+        script {
             sh '''
-                docker exec hrms_mysql-service_1 mysqldump -uroot -proot hrmsdb > backup.sql
+                docker exec djangocicd-mysql-1 mysqldump -uroot -proot hrms_db > backup.sql
             '''
-           }
- 
-          archiveArtifacts artifacts: 'backup.sql', fingerprint: true
-         }
-       }
- 
+        }
+        archiveArtifacts artifacts: 'backup.sql', fingerprint: true
+    }
+}
+
  
 		
 
