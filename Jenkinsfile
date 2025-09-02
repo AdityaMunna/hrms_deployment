@@ -91,7 +91,7 @@ pipeline {
         script {
             sh '''
                 set -e
-                MAX_TRIES=36  # 36 tries × 5 seconds = 180 seconds (3 minutes)
+                MAX_TRIES=36
                 TRIES=0
 
                 until docker exec djangocicd-mysql-1 mysqladmin ping -uroot -proot --silent; do
@@ -105,13 +105,12 @@ pipeline {
                 done
 
                 echo "MySQL is ready. Running backup..."
-                docker exec djangocicd-mysql-1 mysqldump -uroot -proot hrms_db > backup.sql
+                docker exec djangocicd-mysql-1 sh -c 'exec mysqldump -uroot -proot hrms_db' > backup.sql
             '''
         }
         archiveArtifacts artifacts: 'backup.sql', fingerprint: true
     }
 }
-
 
 
  
