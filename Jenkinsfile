@@ -90,8 +90,9 @@ pipeline {
     steps {
         script {
             sh '''
+                set -e
                 docker exec djangocicd-mysql-1 \
-                  mysqldump -h127.0.0.1 -uroot -proot hrms_db > backup.sql
+                  mysqldump -uroot -proot hrms_db > backup.sql
             '''
         }
         archiveArtifacts artifacts: 'backup.sql', fingerprint: true
