@@ -77,44 +77,16 @@ pipeline {
             steps {
                 echo 'Deploying application with Docker Compose...'
 				sh '''
-				docker compose down --volumes --remove-orphans
+				docker-compose down --volumes --remove-orphans
                 docker system prune -af --volumes
-				docker compose down
-				docker compose up -d
+				docker-compose down
+				docker-compose up -d
 				'''
                 echo 'Application deployed successfully.'
             }
         }
 
-		stage('Backup MySQL') {
-    steps {
-        script {
-            sh '''
-                set -e
-                MAX_TRIES=36
-                TRIES=0
-
-                until docker exec djangocicd-mysql-1 mysqladmin ping -uroot -proot --silent; do
-                  echo "Waiting for MySQL container to be ready..."
-                  sleep 5
-                  TRIES=$((TRIES+1))
-                  if [ $TRIES -ge $MAX_TRIES ]; then
-                    echo "MySQL did not start in 3 minutes!"
-                    exit 1
-                  fi
-                done
-
-                echo "MySQL is ready. Running backup..."
-                docker exec djangocicd-mysql-1 sh -c 'exec mysqldump -uroot -proot hrms_db' > backup.sql
-            '''
-        }
-        archiveArtifacts artifacts: 'backup.sql', fingerprint: true
-    }
-}
-
-
- 
-		
+			
 
     }
 }
