@@ -3,7 +3,7 @@ services:
   springboot-service:
     image: mohancc1/backend:latest
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-service:3306/hrmsportal
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-service:3306/hrms_db
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
     ports:
