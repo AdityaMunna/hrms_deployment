@@ -17,7 +17,7 @@ services:
       - hrms-network
 
   backend:
-     image: mohancc1/backend:latest
+    image: mohancc1/backend:latest
     container_name: hrms_backend
     ports:
       - "8080:8080"
@@ -33,7 +33,6 @@ services:
   frontend:
     image: mohancc1/frontend:latest
     container_name: hrms_frontend
-
     ports:
       - "80:80"
     depends_on:
