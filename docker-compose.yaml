@@ -1,20 +1,24 @@
-version: "3.8"
-
 services:
   mysql:
     image: mysql:8.0
+    container_name: hrms_mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: hrms_db
       MYSQL_USER: hrms_user
-      MYSQL_PASSWORD: hrms_pass
+      MYSQL_PASSWORD: hrms_pass123  # Updated password
     ports:
       - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
       - hrms-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
 
   backend:
     image: mohancc1/backend:latest
@@ -22,11 +26,12 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/hrms_db
       SPRING_DATASOURCE_USERNAME: hrms_user
-      SPRING_DATASOURCE_PASSWORD: hrms_pass
+      SPRING_DATASOURCE_PASSWORD: hrms_pass123  # Match updated MySQL password
     networks:
       - hrms-network
 
