@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   mysql:
     image: mysql:8.0
@@ -5,9 +7,9 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: hrmsportal
+      MYSQL_DATABASE: hrmsportal         # Database name matching backend config
       MYSQL_USER: hrms_user
-      MYSQL_PASSWORD: hrms_pass123  # Updated password
+      MYSQL_PASSWORD: hrms_pass123       # Password to match backend
     ports:
       - "3306:3306"
     volumes:
@@ -29,9 +31,9 @@ services:
       mysql:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/hrms_db
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/hrmsportal   # Corrected DB name
       SPRING_DATASOURCE_USERNAME: hrms_user
-      SPRING_DATASOURCE_PASSWORD: hrms_pass123  # Match updated MySQL password
+      SPRING_DATASOURCE_PASSWORD: hrms_pass123
     networks:
       - hrms-network
 
