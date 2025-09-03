@@ -5,7 +5,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: hrms_db
+      MYSQL_DATABASE: hrmsportal
       MYSQL_USER: hrms_user
       MYSQL_PASSWORD: hrms_pass123  # Updated password
     ports:
