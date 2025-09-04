@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'Agent-Mohan' }
+    agent { label 'AGENT-ADITYA' }
     stages {
 
  
