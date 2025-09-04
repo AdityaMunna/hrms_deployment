@@ -23,7 +23,7 @@ services:
       timeout: 5s
 
   backend:
-    image: AdityaMunna/backend:latest
+    image: adityatest728/backend:latest
     container_name: hrms_backend
     restart: always
     ports:
@@ -39,7 +39,7 @@ services:
       - hrms-network
 
   frontend:
-    image: AdityaMunna/frontend:latest
+    image: adityatest728/frontend:latest
     container_name: hrms_frontend
     restart: always
     ports:
