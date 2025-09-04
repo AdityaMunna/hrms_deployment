@@ -6,7 +6,7 @@ pipeline {
         stage('Clone Frontend') {
             steps {
                 dir('frontend') {
-                    git branch: 'main', url: 'https://github.com/mohancc1/hrms_deployment.git'
+                    git branch: 'main', url: 'https://github.com/AdityaMunna/hrms_deployment.git'
                 }
             }
         }
