@@ -28,7 +28,7 @@ pipeline {
 			{
                 dir('Backend_hrms') 
 				{
-                    sh 'docker build -t mohancc1/backend:latest .'
+                    sh 'docker build -t adityatest728/backend:latest .'
                 }
             }
          } 
@@ -52,7 +52,7 @@ pipeline {
 		 stage('Build Frontend Docker Image') {
             steps {
                 dir('frontend') {
-                    sh 'docker build -t mohancc1/frontend:latest .'
+                    sh 'docker build -t adityatest728/frontend:latest .'
                 }
             }
         }	
@@ -65,8 +65,8 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
-                    sh 'docker push mohancc1/frontend:latest'
-                    sh 'docker push mohancc1/backend:latest'
+                    sh 'docker push adityatest728/frontend:latest'
+                    sh 'docker push adityatest728/backend:latest'
                 }
                 echo 'Docker images pushed successfully.'
             }
